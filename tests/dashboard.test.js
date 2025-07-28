@@ -67,29 +67,3 @@ describe('updateDashboard', () => {
     expect(dash.updateCompanyChart).toHaveBeenCalled();
   });
 });
-
-describe('createCharts', () => {
-  beforeEach(() => {
-    global.document = { getElementById: jest.fn(() => ({})) };
-    global.Chart = jest.fn().mockImplementation(() => ({ update: jest.fn() }));
-  });
-
-  test('instantiates charts with existing data', async () => {
-    const dash = new QuantumDashboard();
-    dash.data.market_projections = [{ year: 2024, conservative: 1, moderate: 2, aggressive: 3 }];
-    dash.data.regional_data = [{ region: 'A', share: 10 }];
-    dash.data.investment_flows = [{ year: 2024, vc: 1, government: 2, corporate: 3 }];
-    dash.data.companies = [{ name: 'IBM', marketCap: 1, revenue: 1, employees: 100, technology: 'Superconducting' }];
-    await dash.createCharts();
-    expect(Chart).toHaveBeenCalledTimes(4);
-    expect(dash.charts.market).toBeDefined();
-  });
-
-  test('loads data when arrays are empty', async () => {
-    const dash = new QuantumDashboard();
-    dash.data.market_projections = [];
-    dash.loadDataFromCSVs = jest.fn().mockResolvedValue(undefined);
-    await dash.createCharts();
-    expect(dash.loadDataFromCSVs).toHaveBeenCalled();
-  });
-});

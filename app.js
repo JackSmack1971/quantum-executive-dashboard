@@ -55,11 +55,11 @@ class QuantumDashboard {
 
     async init() {
         await this.loadDataFromCSVs();
-        await this.createCharts();
         this.setupEventListeners();
         this.startRealTimeUpdates();
         this.setupMobileNavigation();
         this.setupPanelInteractions();
+        this.renderCharts();
         this.loadInitialData();
         this.setupAccessibility();
     }
@@ -235,103 +235,6 @@ class QuantumDashboard {
             header.forEach((h, i) => { obj[h] = r[i]; });
             return obj;
         });
-    }
-
-    async createCharts() {
-        if (!this.data.market_projections.length) {
-            await this.loadDataFromCSVs();
-        }
-
-        const techColors = {
-            'Superconducting': '#3b82f6',
-            'Trapped Ion': '#ef4444',
-            'Topological': '#10b981',
-            'Annealing': '#facc15'
-        };
-
-        const marketCtx = document.getElementById('market-growth-chart');
-        const regionalCtx = document.getElementById('regional-chart');
-        const investCtx = document.getElementById('investment-chart');
-        const companyCtx = document.getElementById('company-chart');
-
-        const mp = this.data.market_projections;
-        const rd = this.data.regional_data;
-        const flows = this.data.investment_flows;
-        const comps = this.data.companies;
-
-        this.charts = {
-            market: new Chart(marketCtx, {
-                type: 'line',
-                data: {
-                    labels: mp.map(d => d.year),
-                    datasets: [
-                        { label: 'Conservative', borderColor: '#3b82f6', data: mp.map(d => d.conservative), fill: false },
-                        { label: 'Moderate', borderColor: '#10b981', data: mp.map(d => d.moderate), fill: false },
-                        { label: 'Aggressive', borderColor: '#ef4444', data: mp.map(d => d.aggressive), fill: false }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'nearest', intersect: false },
-                    plugins: {
-                        tooltip: { enabled: true },
-                        legend: {
-                            display: true,
-                            onClick: (e, item, legend) => {
-                                const ci = legend.chart;
-                                ci.toggleDatasetVisibility(item.datasetIndex);
-                                ci.update();
-                            }
-                        }
-                    }
-                }
-            }),
-            regional: new Chart(regionalCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: rd.map(d => d.region),
-                    datasets: [{ data: rd.map(d => d.share) }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { tooltip: { enabled: true }, legend: { display: true } }
-                }
-            }),
-            investment: new Chart(investCtx, {
-                type: 'bar',
-                data: {
-                    labels: flows.map(d => d.year),
-                    datasets: [
-                        { label: 'VC', backgroundColor: '#3b82f6', data: flows.map(d => d.vc) },
-                        { label: 'Government', backgroundColor: '#10b981', data: flows.map(d => d.government) },
-                        { label: 'Corporate', backgroundColor: '#facc15', data: flows.map(d => d.corporate) }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { x: { stacked: true }, y: { stacked: true } },
-                    plugins: { tooltip: { enabled: true }, legend: { display: true } }
-                }
-            }),
-            company: new Chart(companyCtx, {
-                type: 'bubble',
-                data: {
-                    datasets: comps.map(c => ({
-                        label: c.name,
-                        backgroundColor: techColors[c.technology] || '#94a3b8',
-                        data: [{ x: c.marketCap || 0, y: c.revenue || 0, r: Math.sqrt(c.employees) / 20 }]
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { tooltip: { enabled: true }, legend: { display: true } }
-                }
-            })
-        };
     }
 
     renderCharts() {
