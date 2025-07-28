@@ -116,9 +116,10 @@ class QuantumDashboard {
             panel.addEventListener('mouseleave', (e) => this.handlePanelLeave(e));
         });
 
-        // Responsive design handlers
-        window.addEventListener('resize', () => this.handleResize());
-        window.addEventListener('orientationchange', () => this.handleOrientationChange());
+        // Responsive design handlers with throttling
+        this.debouncedResize = this.debounce(() => this.handleResize(), 100);
+        window.addEventListener('resize', this.debouncedResize);
+        window.addEventListener('orientationchange', this.debouncedResize);
     }
 
     startRealTimeUpdates() {
@@ -1140,7 +1141,7 @@ class QuantumDashboard {
     scrollToPanelMobile(panelType) {
         const panelMap = {
             'market': '.panel-market-growth',
-            'geographic': '.panel-geographic', 
+            'geographic': '.panel-geographic',
             'investment': '.panel-investment',
             'companies': '.panel-companies'
         };
@@ -1154,6 +1155,20 @@ class QuantumDashboard {
         }
     }
 
+    /**
+     * Returns a debounced version of the supplied function.
+     * @param {Function} fn - Function to debounce
+     * @param {number} delay - Delay in ms
+     * @returns {Function}
+     */
+    debounce(fn, delay) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn(...args), delay);
+        };
+    }
+
     handleResize() {
         const mobileNav = document.querySelector('.mobile-nav');
         if (window.innerWidth <= 1024) {
@@ -1163,11 +1178,7 @@ class QuantumDashboard {
         }
     }
 
-    handleOrientationChange() {
-        setTimeout(() => {
-            this.handleResize();
-        }, 100);
-    }
+
 
     // Analytics and performance
     logInteraction(type, value) {
