@@ -1,0 +1,8 @@
+Company,Revenue_2024_M,Market_Cap_B,Employees,Quantum_Revenue_Share,Technology_Focus,Confidence_Level
+IBM,1000,N/A,280000,Dedicated,Superconducting,High
+Google/Alphabet,N/A,2000,182000,Research,Superconducting,Medium
+Microsoft,N/A,3200,228000,Research,Topological,Medium
+D-Wave,6.5,0.5,200,Primary,Annealing,High
+Rigetti,10.8,0.8,150,Primary,Superconducting,High
+IonQ,N/A,2.5,180,Primary,Trapped Ion,Medium
+Quantinuum,N/A,5.0,500,Primary,Trapped Ion,Medium

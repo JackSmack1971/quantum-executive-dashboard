@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Computing Market Intelligence Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="dashboard-title">Quantum Computing Market Intelligence</h1>
+                <div class="header-meta">
+                    <div class="timestamp">
+                        <span class="timestamp-label">Last Updated:</span>
+                        <span id="live-timestamp">Monday, July 28, 2025, 1:00 AM</span>
+                    </div>
+                    <div class="data-quality-indicator">
+                        <span class="quality-badge high-confidence">95% Data Reliability</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="time-range">Time Range:</label>
+                <select id="time-range" class="form-control">
+                    <option value="2024-2035">2024-2035 (Full Projection)</option>
+                    <option value="2024-2030">2024-2030 (Near Term)</option>
+                    <option value="2030-2035">2030-2035 (Long Term)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="confidence-level">Confidence Level:</label>
+                <select id="confidence-level" class="form-control">
+                    <option value="all">All Levels</option>
+                    <option value="high">High (85-95%)</option>
+                    <option value="medium">Medium (70-84%)</option>
+                    <option value="low">Low (50-69%)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="region-focus">Regional Focus:</label>
+                <select id="region-focus" class="form-control">
+                    <option value="global">Global View</option>
+                    <option value="north-america">North America</option>
+                    <option value="asia-pacific">Asia Pacific</option>
+                    <option value="europe">Europe</option>
+                </select>
+            </div>
+            <div class="export-controls">
+                <button class="btn btn--secondary" id="export-pdf">Export PDF</button>
+                <button class="btn btn--secondary" id="export-csv">Export CSV</button>
+                <button class="btn btn--secondary" id="export-png">Export Images</button>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Panel 1: Market Growth Overview -->
+            <div class="dashboard-panel panel-market-growth">
+                <div class="panel-header">
+                    <h2 class="panel-title">Market Growth Projections 2024-2035</h2>
+                    <div class="panel-meta">
+                        <span class="confidence-indicator medium-confidence">Medium Confidence</span>
+                        <span class="data-points">8 Sources</span>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/117d0abc759974c00bb9efcebfb79c10/0c9002b1-e1d2-4572-9ee9-5631c1880faf/df7dcfd2.png" alt="Market Growth Projections" class="embedded-chart">
+                    </div>
+                    <div class="key-insight">
+                        <strong>Key Insight:</strong> Market expected to reach $5.3-$28.2B by 2030
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 2: Geographic Distribution -->
+            <div class="dashboard-panel panel-geographic">
+                <div class="panel-header">
+                    <h2 class="panel-title">Regional Market Leadership & Growth</h2>
+                    <div class="panel-meta">
+                        <span class="confidence-indicator high-confidence">High Confidence</span>
+                        <span class="data-points">12 Sources</span>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/117d0abc759974c00bb9efcebfb79c10/8602325f-46ce-4238-bf8c-67aa1b96fa6a/2d5f31aa.png" alt="Regional Market Distribution" class="embedded-chart">
+                    </div>
+                    <div class="regional-annotations">
+                        <div class="annotation north-america">
+                            <span class="region-name">North America</span>
+                            <span class="region-stat">37.6% Market Leader</span>
+                            <span class="growth-arrow up">↗ 35.8% CAGR</span>
+                        </div>
+                        <div class="annotation asia-pacific">
+                            <span class="region-name">Asia Pacific</span>
+                            <span class="region-stat">26.9% Share</span>
+                            <span class="growth-arrow up-high">↗ 38.2% Fastest Growth</span>
+                        </div>
+                        <div class="annotation europe">
+                            <span class="region-name">Europe</span>
+                            <span class="region-stat">33.8% Share</span>
+                            <span class="growth-arrow up">↗ 33.2% Steady Growth</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 3: Investment Flows -->
+            <div class="dashboard-panel panel-investment">
+                <div class="panel-header">
+                    <h2 class="panel-title">Investment Intelligence: Public vs Private</h2>
+                    <div class="panel-meta">
+                        <span class="confidence-indicator high-confidence">High Confidence</span>
+                        <span class="data-points">15 Sources</span>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/117d0abc759974c00bb9efcebfb79c10/1cb40274-f33c-435d-a1db-f147850ae661/64d09d29.png" alt="Investment Flows" class="embedded-chart">
+                    </div>
+                    <div class="investment-milestones">
+                        <div class="milestone">
+                            <span class="milestone-year">2024:</span>
+                            <span class="milestone-text">Record $1.5B VC Funding</span>
+                        </div>
+                        <div class="milestone">
+                            <span class="milestone-year">2025 Proj:</span>
+                            <span class="milestone-text">$5.4B Total Investment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 4: Company Performance -->
+            <div class="dashboard-panel panel-companies">
+                <div class="panel-header">
+                    <h2 class="panel-title">Market Leaders Performance Matrix</h2>
+                    <div class="panel-meta">
+                        <span class="confidence-indicator medium-confidence">Mixed Confidence</span>
+                        <span class="data-points">7 Companies</span>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/117d0abc759974c00bb9efcebfb79c10/54ed07ff-2be7-4bac-aa88-fdfbf630f4e8/3f6a128f.png" alt="Company Performance" class="embedded-chart">
+                    </div>
+                    <div class="company-legend">
+                        <div class="tech-types">
+                            <span class="tech-type">🔵 Superconducting</span>
+                            <span class="tech-type">🔴 Trapped Ion</span>
+                            <span class="tech-type">🟢 Topological</span>
+                            <span class="tech-type">🟡 Annealing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Automated Insights Section -->
+        <div class="insights-section">
+            <h2 class="insights-title">Automated Intelligence & Narrative Summaries</h2>
+            <div class="insights-grid">
+                <div class="insight-card market-analysis">
+                    <div class="insight-header">
+                        <h3>Market Size Analysis</h3>
+                        <span class="confidence-badge medium-confidence">Medium Confidence</span>
+                    </div>
+                    <div class="insight-content">
+                        <p id="market-insight">The quantum computing market demonstrated 38.5% growth in 2024, reaching $1.3B, with Medium reliability. Key driver: Record VC investment. Investment shifted toward hardware scaling with $30M average deal size indicating serious commercial validation.</p>
+                        <div class="insight-metrics">
+                            <span class="metric">38.5% YoY Growth</span>
+                            <span class="metric">$1.3B Market Size</span>
+                            <span class="metric">$30M Avg Deal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-card geographic-analysis">
+                    <div class="insight-header">
+                        <h3>Geographic Intelligence</h3>
+                        <span class="confidence-badge high-confidence">High Confidence</span>
+                    </div>
+                    <div class="insight-content">
+                        <p id="geographic-insight">North America maintains market leadership with 37.6% share while Asia Pacific accelerates at 38.2% CAGR. Geographic distribution reveals China's $15B quantum dominance creating strategic implications for Western quantum sovereignty.</p>
+                        <div class="insight-metrics">
+                            <span class="metric">37.6% NA Share</span>
+                            <span class="metric">38.2% APAC CAGR</span>
+                            <span class="metric">$15B China Investment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-card competitive-analysis">
+                    <div class="insight-header">
+                        <h3>Competitive Landscape</h3>
+                        <span class="confidence-badge high-confidence">High Confidence</span>
+                    </div>
+                    <div class="insight-content">
+                        <p id="competitive-insight">IBM's $1B cumulative quantum revenue milestone establishes commercial viability benchmarks. Investment efficiency metrics show $200M+ funding rounds becoming standard for quantum computing scalability.</p>
+                        <div class="insight-metrics">
+                            <span class="metric">$1B IBM Revenue</span>
+                            <span class="metric">$200M+ Rounds</span>
+                            <span class="metric">7 Major Players</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Data Connection Indicator -->
+            <div class="data-connection-status">
+                <div class="connection-indicator active">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Real-time data connection active • Last refresh: <span id="last-refresh">2 seconds ago</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation (Hidden by default) -->
+        <div class="mobile-nav hidden">
+            <button class="nav-btn active" data-panel="market">Market</button>
+            <button class="nav-btn" data-panel="geographic">Regions</button>
+            <button class="nav-btn" data-panel="investment">Investment</button>
+            <button class="nav-btn" data-panel="companies">Companies</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
