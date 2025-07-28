@@ -387,48 +387,6 @@ class QuantumDashboard {
         };
     }
 
-    renderCharts() {
-        const techColors = {
-            'Superconducting': '#3b82f6',
-            'Trapped Ion': '#ef4444',
-            'Topological': '#10b981',
-            'Annealing': '#facc15'
-        };
-
-        const marketCtx = document.getElementById('market-growth-chart');
-        const regionalCtx = document.getElementById('regional-chart');
-        const investCtx = document.getElementById('investment-chart');
-        const companyCtx = document.getElementById('company-chart');
-
-        this.charts = {
-            market: new Chart(marketCtx, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: { responsive: true, maintainAspectRatio: false }
-            }),
-            regional: new Chart(regionalCtx, {
-                type: 'doughnut',
-                data: { labels: [], datasets: [{ data: [] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            }),
-            investment: new Chart(investCtx, {
-                type: 'bar',
-                data: { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { x: { stacked: true }, y: { stacked: true } }
-                }
-            }),
-            company: new Chart(companyCtx, {
-                type: 'bubble',
-                data: { datasets: [] },
-                options: { responsive: true, maintainAspectRatio: false }
-            })
-        };
-
-        this.updateCharts(this.data);
-    }
 
     updateCharts(data) {
         if (!this.charts) return;
