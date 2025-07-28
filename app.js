@@ -282,73 +282,53 @@ class QuantumDashboard {
 
     updateCharts(data) {
         if (!this.charts) return;
+        this.updateMarketChart(data.market_projections);
+        this.updateRegionalChart(data.regional_data);
+        this.updateInvestmentChart(data.investment_flows);
+        this.updateCompanyChart(data.companies);
+    }
 
+    updateMarketChart(marketData) {
+        if (!this.charts?.market) return;
+        this.charts.market.data.labels = marketData.map(d => d.year);
+        this.charts.market.data.datasets = [
+            { label: 'Conservative', borderColor: '#3b82f6', data: marketData.map(d => d.conservative), fill: false },
+            { label: 'Moderate', borderColor: '#10b981', data: marketData.map(d => d.moderate), fill: false },
+            { label: 'Aggressive', borderColor: '#ef4444', data: marketData.map(d => d.aggressive), fill: false }
+        ];
+        this.charts.market.update();
+    }
+
+    updateRegionalChart(regionData) {
+        if (!this.charts?.regional) return;
+        this.charts.regional.data.labels = regionData.map(d => d.region);
+        this.charts.regional.data.datasets[0].data = regionData.map(d => d.share);
+        this.charts.regional.update();
+    }
+
+    updateInvestmentChart(flowData) {
+        if (!this.charts?.investment) return;
+        this.charts.investment.data.labels = flowData.map(d => d.year);
+        this.charts.investment.data.datasets = [
+            { label: 'VC', backgroundColor: '#3b82f6', data: flowData.map(d => d.vc) },
+            { label: 'Government', backgroundColor: '#10b981', data: flowData.map(d => d.government) },
+            { label: 'Corporate', backgroundColor: '#facc15', data: flowData.map(d => d.corporate) }
+        ];
+        this.charts.investment.update();
+    }
+
+    updateCompanyChart(companyData) {
+        if (!this.charts?.company) return;
         const techColors = {
             'Superconducting': '#3b82f6',
             'Trapped Ion': '#ef4444',
             'Topological': '#10b981',
             'Annealing': '#facc15'
         };
-
-        // Market line chart
-        this.charts.market.data.labels = data.market_projections.map(d => d.year);
-        this.charts.market.data.datasets = [
-            {
-                label: 'Conservative',
-                borderColor: '#3b82f6',
-                data: data.market_projections.map(d => d.conservative),
-                fill: false
-            },
-            {
-                label: 'Moderate',
-                borderColor: '#10b981',
-                data: data.market_projections.map(d => d.moderate),
-                fill: false
-            },
-            {
-                label: 'Aggressive',
-                borderColor: '#ef4444',
-                data: data.market_projections.map(d => d.aggressive),
-                fill: false
-            }
-        ];
-        this.charts.market.update();
-
-        // Regional doughnut
-        this.charts.regional.data.labels = data.regional_data.map(d => d.region);
-        this.charts.regional.data.datasets[0].data = data.regional_data.map(d => d.share);
-        this.charts.regional.update();
-
-        // Investment stacked bar
-        this.charts.investment.data.labels = data.investment_flows.map(d => d.year);
-        this.charts.investment.data.datasets = [
-            {
-                label: 'VC',
-                backgroundColor: '#3b82f6',
-                data: data.investment_flows.map(d => d.vc)
-            },
-            {
-                label: 'Government',
-                backgroundColor: '#10b981',
-                data: data.investment_flows.map(d => d.government)
-            },
-            {
-                label: 'Corporate',
-                backgroundColor: '#facc15',
-                data: data.investment_flows.map(d => d.corporate)
-            }
-        ];
-        this.charts.investment.update();
-
-        // Company bubble chart
-        this.charts.company.data.datasets = data.companies.map(c => ({
+        this.charts.company.data.datasets = companyData.map(c => ({
             label: c.name,
             backgroundColor: techColors[c.technology] || '#94a3b8',
-            data: [{
-                x: c.marketCap || 0,
-                y: c.revenue || 0,
-                r: Math.sqrt(c.employees) / 20
-            }]
+            data: [{ x: c.marketCap || 0, y: c.revenue || 0, r: Math.sqrt(c.employees) / 20 }]
         }));
         this.charts.company.update();
     }
@@ -385,15 +365,18 @@ class QuantumDashboard {
     updateDashboard() {
         // Filter data based on current filter settings
         const filteredData = this.filterData();
-        
+
         // Update panels with filtered data
         this.updatePanelData(filteredData);
-        
+
         // Update insights based on filtered data
         this.updateInsights(filteredData);
 
         // Update visualizations
-        this.updateCharts(filteredData);
+        this.updateMarketChart(filteredData.market_projections);
+        this.updateRegionalChart(filteredData.regional_data);
+        this.updateInvestmentChart(filteredData.investment_flows);
+        this.updateCompanyChart(filteredData.companies);
 
         // Log performance metrics
         this.measurePerformance();
@@ -1179,14 +1162,20 @@ class QuantumDashboard {
     }
 }
 
-// Initialize dashboard when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Quantum Computing Market Intelligence Dashboard Loading...');
-    
-    const startTime = performance.now();
-    const dashboard = new QuantumDashboard();
-    const loadTime = performance.now() - startTime;
-    
-    console.log(`Dashboard initialized in ${loadTime.toFixed(2)}ms`);
-    window.quantumDashboard = dashboard;
-});
+// Initialize dashboard when DOM is available
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Quantum Computing Market Intelligence Dashboard Loading...');
+
+        const startTime = performance.now();
+        const dashboard = new QuantumDashboard();
+        const loadTime = performance.now() - startTime;
+
+        console.log(`Dashboard initialized in ${loadTime.toFixed(2)}ms`);
+        window.quantumDashboard = dashboard;
+    });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = QuantumDashboard;
+}
