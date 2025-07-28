@@ -1,6 +1,13 @@
 // Quantum Computing Market Intelligence Dashboard
 // Executive-level interactive functionality
 
+class CSVFetchError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'CSVFetchError';
+    }
+}
+
 class QuantumDashboard {
     constructor() {
         this.data = {
@@ -226,15 +233,31 @@ class QuantumDashboard {
         }));
     }
 
+    /**
+     * Fetches and parses a CSV file into an array of objects.
+     * @param {string} path - Relative path to the CSV file
+     * @returns {Promise<Object[]>}
+     * @throws {CSVFetchError} When the request fails or the response is not OK
+     */
     async fetchCSV(path) {
-        const res = await fetch(path);
-        const text = await res.text();
-        const [header, ...rows] = text.trim().split(/\r?\n/).map(r => r.split(','));
-        return rows.map(r => {
-            const obj = {};
-            header.forEach((h, i) => { obj[h] = r[i]; });
-            return obj;
-        });
+        try {
+            const res = await fetch(path);
+            if (!res.ok) {
+                throw new CSVFetchError(`Failed to fetch ${path}: ${res.status} ${res.statusText}`);
+            }
+            const text = await res.text();
+            const [header, ...rows] = text.trim().split(/\r?\n/).map(r => r.split(','));
+            return rows.map(r => {
+                const obj = {};
+                header.forEach((h, i) => { obj[h] = r[i]; });
+                return obj;
+            });
+        } catch (err) {
+            if (err instanceof CSVFetchError) {
+                throw err;
+            }
+            throw new CSVFetchError(`Error fetching CSV ${path}: ${err.message}`);
+        }
     }
 
     async createCharts() {
@@ -1274,5 +1297,5 @@ if (typeof document !== 'undefined') {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = QuantumDashboard;
+    module.exports = { QuantumDashboard, CSVFetchError };
 }

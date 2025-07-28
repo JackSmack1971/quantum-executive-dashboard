@@ -1,4 +1,4 @@
-const QuantumDashboard = require('../app');
+const { QuantumDashboard } = require('../app');
 
 beforeEach(() => {
   QuantumDashboard.prototype.init = jest.fn();
