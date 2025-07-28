@@ -47,15 +47,19 @@ class QuantumDashboard {
             confidenceLevel: 'all',
             regionFocus: 'global'
         };
-        
+
+        this.charts = {};
+
         this.init();
     }
 
-    init() {
+    async init() {
+        await this.loadDataFromCSVs();
         this.setupEventListeners();
         this.startRealTimeUpdates();
         this.setupMobileNavigation();
         this.setupPanelInteractions();
+        this.renderCharts();
         this.loadInitialData();
         this.setupAccessibility();
     }
@@ -174,6 +178,181 @@ class QuantumDashboard {
         });
     }
 
+    async loadDataFromCSVs() {
+        const files = [
+            'quantum_market_projections.csv',
+            'quantum_regional_data.csv',
+            'quantum_investment_flows.csv',
+            'quantum_company_performance.csv'
+        ];
+        const [market, regional, investment, companies] = await Promise.all(
+            files.map(f => this.fetchCSV(f))
+        );
+
+        this.data.market_projections = market.map(row => ({
+            year: Number(row.Year),
+            conservative: Number(row.Conservative_Estimate),
+            moderate: Number(row.Moderate_Estimate),
+            aggressive: Number(row.Aggressive_Estimate),
+            sources: Number(row.Sources_Count),
+            confidence: row.Confidence_Level
+        }));
+
+        this.data.regional_data = regional.map(row => ({
+            region: row.Region,
+            share: Number(row.Market_Share_2024),
+            revenue: Number(row.Revenue_2024_M),
+            cagr: Number(row.CAGR_2025_2030),
+            countries: row.Key_Countries
+        }));
+
+        this.data.investment_flows = investment.map(row => ({
+            year: Number(row.Year),
+            vc: Number(row.VC_Funding_M),
+            government: Number(row.Government_Funding_M),
+            corporate: Number(row.Corporate_Investment_M),
+            deals: Number(row.Deal_Count),
+            avg_deal: Number(row.Average_Deal_Size_M)
+        }));
+
+        this.data.companies = companies.map(row => ({
+            name: row.Company,
+            revenue: row.Revenue_2024_M ? Number(row.Revenue_2024_M) : null,
+            marketCap: row.Market_Cap_B ? Number(row.Market_Cap_B) : null,
+            employees: Number(row.Employees),
+            technology: row.Technology_Focus,
+            confidence: row.Confidence_Level,
+            type: row.Quantum_Revenue_Share
+        }));
+    }
+
+    async fetchCSV(path) {
+        const res = await fetch(path);
+        const text = await res.text();
+        const [header, ...rows] = text.trim().split(/\r?\n/).map(r => r.split(','));
+        return rows.map(r => {
+            const obj = {};
+            header.forEach((h, i) => { obj[h] = r[i]; });
+            return obj;
+        });
+    }
+
+    renderCharts() {
+        const techColors = {
+            'Superconducting': '#3b82f6',
+            'Trapped Ion': '#ef4444',
+            'Topological': '#10b981',
+            'Annealing': '#facc15'
+        };
+
+        const marketCtx = document.getElementById('market-growth-chart');
+        const regionalCtx = document.getElementById('regional-chart');
+        const investCtx = document.getElementById('investment-chart');
+        const companyCtx = document.getElementById('company-chart');
+
+        this.charts = {
+            market: new Chart(marketCtx, {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false }
+            }),
+            regional: new Chart(regionalCtx, {
+                type: 'doughnut',
+                data: { labels: [], datasets: [{ data: [] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            }),
+            investment: new Chart(investCtx, {
+                type: 'bar',
+                data: { labels: [], datasets: [] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { x: { stacked: true }, y: { stacked: true } }
+                }
+            }),
+            company: new Chart(companyCtx, {
+                type: 'bubble',
+                data: { datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false }
+            })
+        };
+
+        this.updateCharts(this.data);
+    }
+
+    updateCharts(data) {
+        if (!this.charts) return;
+
+        const techColors = {
+            'Superconducting': '#3b82f6',
+            'Trapped Ion': '#ef4444',
+            'Topological': '#10b981',
+            'Annealing': '#facc15'
+        };
+
+        // Market line chart
+        this.charts.market.data.labels = data.market_projections.map(d => d.year);
+        this.charts.market.data.datasets = [
+            {
+                label: 'Conservative',
+                borderColor: '#3b82f6',
+                data: data.market_projections.map(d => d.conservative),
+                fill: false
+            },
+            {
+                label: 'Moderate',
+                borderColor: '#10b981',
+                data: data.market_projections.map(d => d.moderate),
+                fill: false
+            },
+            {
+                label: 'Aggressive',
+                borderColor: '#ef4444',
+                data: data.market_projections.map(d => d.aggressive),
+                fill: false
+            }
+        ];
+        this.charts.market.update();
+
+        // Regional doughnut
+        this.charts.regional.data.labels = data.regional_data.map(d => d.region);
+        this.charts.regional.data.datasets[0].data = data.regional_data.map(d => d.share);
+        this.charts.regional.update();
+
+        // Investment stacked bar
+        this.charts.investment.data.labels = data.investment_flows.map(d => d.year);
+        this.charts.investment.data.datasets = [
+            {
+                label: 'VC',
+                backgroundColor: '#3b82f6',
+                data: data.investment_flows.map(d => d.vc)
+            },
+            {
+                label: 'Government',
+                backgroundColor: '#10b981',
+                data: data.investment_flows.map(d => d.government)
+            },
+            {
+                label: 'Corporate',
+                backgroundColor: '#facc15',
+                data: data.investment_flows.map(d => d.corporate)
+            }
+        ];
+        this.charts.investment.update();
+
+        // Company bubble chart
+        this.charts.company.data.datasets = data.companies.map(c => ({
+            label: c.name,
+            backgroundColor: techColors[c.technology] || '#94a3b8',
+            data: [{
+                x: c.marketCap || 0,
+                y: c.revenue || 0,
+                r: Math.sqrt(c.employees) / 20
+            }]
+        }));
+        this.charts.company.update();
+    }
+
     loadInitialData() {
         // Simulate loading animation
         this.showLoadingState();
@@ -212,7 +391,10 @@ class QuantumDashboard {
         
         // Update insights based on filtered data
         this.updateInsights(filteredData);
-        
+
+        // Update visualizations
+        this.updateCharts(filteredData);
+
         // Log performance metrics
         this.measurePerformance();
     }
