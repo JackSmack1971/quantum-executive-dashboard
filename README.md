@@ -40,3 +40,6 @@ To update the dashboard data, replace these files with new versions while keepin
   npm test
   ```
 - Charts are created with Chart.js in `app.js`. If you introduce additional tooling (e.g., bundlers), run the build step before serving the site.
+
+## License
+This project is licensed under the [MIT License](LICENSE).
