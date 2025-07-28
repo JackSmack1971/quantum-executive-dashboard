@@ -4,6 +4,36 @@ beforeEach(() => {
   QuantumDashboard.prototype.init = jest.fn();
 });
 
+describe('chart config helpers', () => {
+  test('getMarketChartConfig returns line chart config', () => {
+    const dash = new QuantumDashboard();
+    const cfg = dash.getMarketChartConfig();
+    expect(cfg.type).toBe('line');
+    expect(cfg.data.datasets.length).toBe(3);
+  });
+
+  test('getRegionalChartConfig returns doughnut chart config', () => {
+    const dash = new QuantumDashboard();
+    const cfg = dash.getRegionalChartConfig();
+    expect(cfg.type).toBe('doughnut');
+    expect(cfg.data.labels.length).toBeGreaterThan(0);
+  });
+
+  test('getInvestmentChartConfig returns stacked bar config', () => {
+    const dash = new QuantumDashboard();
+    const cfg = dash.getInvestmentChartConfig();
+    expect(cfg.type).toBe('bar');
+    expect(cfg.data.datasets.length).toBe(3);
+  });
+
+  test('getCompanyChartConfig returns bubble chart config', () => {
+    const dash = new QuantumDashboard();
+    const cfg = dash.getCompanyChartConfig();
+    expect(cfg.type).toBe('bubble');
+    expect(cfg.data.datasets.length).toBeGreaterThan(0);
+  });
+});
+
 describe('filterData', () => {
   test('filters by time range', () => {
     const dash = new QuantumDashboard();
@@ -76,6 +106,10 @@ describe('createCharts', () => {
 
   test('instantiates charts with existing data', async () => {
     const dash = new QuantumDashboard();
+    dash.getMarketChartConfig = jest.fn(() => ({}));
+    dash.getRegionalChartConfig = jest.fn(() => ({}));
+    dash.getInvestmentChartConfig = jest.fn(() => ({}));
+    dash.getCompanyChartConfig = jest.fn(() => ({}));
     dash.data.market_projections = [{ year: 2024, conservative: 1, moderate: 2, aggressive: 3 }];
     dash.data.regional_data = [{ region: 'A', share: 10 }];
     dash.data.investment_flows = [{ year: 2024, vc: 1, government: 2, corporate: 3 }];
@@ -83,6 +117,10 @@ describe('createCharts', () => {
     await dash.createCharts();
     expect(Chart).toHaveBeenCalledTimes(4);
     expect(dash.charts.market).toBeDefined();
+    expect(dash.getMarketChartConfig).toHaveBeenCalled();
+    expect(dash.getRegionalChartConfig).toHaveBeenCalled();
+    expect(dash.getInvestmentChartConfig).toHaveBeenCalled();
+    expect(dash.getCompanyChartConfig).toHaveBeenCalled();
   });
 
   test('loads data when arrays are empty', async () => {
